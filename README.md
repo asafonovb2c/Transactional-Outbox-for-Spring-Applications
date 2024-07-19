@@ -24,12 +24,14 @@ The Transactional Outbox is not suitable for scenarios that require synchronous 
 
 ## How does it work?
 
-When this library is injected, it creates a schema named 'outbox' and a table 'outbox.event 'in the database to store events.
-You can find sql migrations in (V1__init.sql)
+The concept is quite simple: save events to a database and then process them asynchronously. This approach involves storing events and handling them in the background without blocking the main application flow.
 
-When the service starts, a scheduler is created for each class that implements the OutboxEventHandleStrategy<T extends OutboxEventDto> interface.
+Upon initialization, the library automatically sets up a database schema named 'outbox' and within it, a table named 'outbox.event' to store these events. The SQL migrations for this setup can be found in the file named 'V1__init.sql'.
 
-Each scheduler periodically checks the outbox.event table for events of a specified type (OutboxEventType.name()) and processes them using the logic defined in the OutboxEventHandleStrategy<T>.handleEvent(@NotNull T eventDto) method.
+When the Spring application launches, it configures a scheduler for each class that implements the OutboxEventHandleStrategy interface. For each type of OutboxEventHandleStrategy that is required to process these events, an independent thread pool is created. This design ensures that the processing of different event types can be managed efficiently and without contention, allowing for parallel execution and better scalability.
+
+These schedulers regularly inspect the 'outbox.event' table for specific types of events, identified by 'OutboxEventType.name()', and process them according to the logic defined in the 'OutboxEventHandleStrategy.handleEvent(@NotNull T eventDto)' method.
+
 
 ### Event Processing Outcomes
 
