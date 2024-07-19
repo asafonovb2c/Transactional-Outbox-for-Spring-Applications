@@ -174,10 +174,9 @@ The following methods are provided to create an OutboxEventResult, which should 
 - OutboxEventResultKt.createEventLockBusyResult(String lockKey): Creates a result indicating that the lock key is busy; the event will be processed again.
 
 
-4. Метрики работы очереди
+4. Queue Operation Metrics
 
-
-Метрики можно посмотреть по адресу http://localhost:yourport/actuator/prometheus. Примеры метрик:
+You can get the metrics at the following address: http://localhost:yourport/actuator/prometheus. Here are some examples of the metrics:
 
 Queue Processing Speed:
 
