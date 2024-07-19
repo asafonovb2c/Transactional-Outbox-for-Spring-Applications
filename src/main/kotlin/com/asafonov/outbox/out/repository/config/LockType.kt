@@ -1,8 +1,8 @@
 package com.asafonov.outbox.out.repository.config
 
 /**
- * @property REDIS Редис, распределнный лок
- * @property LOCAL Лок внутри приложения, подходит только если инстанс = 1
+ * @property REDIS Redis, distributed lock.
+ * @property LOCAL Local lock within the application, suitable only if there is a single instance.
  */
 enum class LockType {
     REDIS,

@@ -5,7 +5,7 @@ package com.asafonov.outbox.domain.event
  */
 interface OutboxEventType {
     /**
-     * Отдать имя события
+     * Returns the name of the event.
      */
     fun getName(): String
 

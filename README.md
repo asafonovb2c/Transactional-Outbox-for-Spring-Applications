@@ -4,7 +4,7 @@
 
 The Transactional Outbox is designed to ensure atomicity of operations that require multiple actions to be performed simultaneously, such as database (DB) writes, API requests, and event publishing to a messaging system (e.g., RabbitMQ, Kafka).
 
-In a typical microservice architecture, you often need to save a record in the database, send a request to another microservice through an API, and publish an event to RabbitMQ, all in a specific sequence. However, under normal circumstances, the lack of transactional support for some of these operations—specifically the API call and the RabbitMQ event—means you can't ensure they all complete successfully as a single unit. For instance, you might successfully save the record in the database and publish the event to RabbitMQ, but then the API request could fail if the service is down.
+In a typical microservice architecture, you often need to save a record in the database, send a request to another microservice through an API, and publish an event to RabbitMQ, all in a specific sequence. However, under normal circumstances, the lack of transactional support for some of these operations—specifically the API call and the RabbitMQ event—means you can't ensure one complete successfully as a single unit. For instance, you might successfully save the record in the database and publish the event to RabbitMQ, but then the API request could fail if the service is down.
 
 By using a Transactional Outbox, you can ensure that your actions are atomic. This means that you can save a new entity and two event commands in the database within a single transaction: one for making the API request and another for publishing the event. The library then processes those event commands asynchronously, handling the API request and sending the message to RabbitMQ. This approach guarantees that either all actions are completed successfully or none of them are.
 
@@ -214,7 +214,7 @@ You can also set custom tags for queue operations by overriding the default meth
 
 ### How to Connect the Library
 
-Обязательные шаги:
+Mandatory Steps:
 
 1. Add to pom.xml:
 
