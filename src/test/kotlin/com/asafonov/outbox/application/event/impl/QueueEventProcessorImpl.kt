@@ -20,7 +20,7 @@ class OutboxEventProcessorImplTest: BaseIntegrationTest()  {
     private val strategy = TestOutboxEventHandleStrategy()
 
     @Test
-    @DisplayName("Проверяем обработку пустой очереди")
+    @DisplayName("Checking the processing of an empty queue")
     fun process_empty_doesNotThrow() {
         assertDoesNotThrow {
             outboxEventProcessor!!.process(strategy)
@@ -28,7 +28,7 @@ class OutboxEventProcessorImplTest: BaseIntegrationTest()  {
     }
 
     @Test
-    @DisplayName("Проверяем обработку очереди с событиями")
+    @DisplayName("Checking the processing of a queue with events")
     fun process_filled_doesNotThrow() {
         val events = listOf(createNewEvent(),createNewEvent(),createNewEvent(),createNewEvent())
         outboxEventMapper!!.insertAll(events)

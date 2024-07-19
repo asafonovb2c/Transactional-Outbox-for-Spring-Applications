@@ -32,7 +32,7 @@ class OutboxMetricsExportSchedulerTest {
     private val metrics = listOf(OutboxEventTypeMetricsDto(TestOutboxEventType.TEST_EVENT.getName(), 5))
 
     @Test
-    @DisplayName("Проверяем что метрики экспортятся нормально")
+    @DisplayName("Checking that metrics are exported correctly")
     fun exportMetric_getMetrics_verifyCount() {
         every { outboxEventDbPort.getOutboxEventMetrics() } returns metrics
         every { outboxKeyLocker.tryLockWithTimeOut(any(), any()) }  returns true

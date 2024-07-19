@@ -34,7 +34,7 @@ class LocalOutboxKeyLockerTest {
 
     @OptIn(DelicateCoroutinesApi::class)
     @Test
-    @DisplayName("Проверка работы вечных локов в памяти")
+    @DisplayName("Verification of In-Memory Persistent Locks")
     fun lockLockerAsyncLock_blockValue_unlockResult() {
         val keys = listOf(key1, keyAs1, key2)
         val repeatedKeys = keys.flatMap { key -> List(1000) { key } }

@@ -29,7 +29,7 @@ object OutboxEventProperties {
     const val STASH_NAME: String = "outbox.stash.name"
 
     /**
-     * Получение проперти для определенной очереди
+     * Get properties for a specific queue
      */
     fun getOutboxTypeProperty(propertyName: String, outboxType: String): String {
         return propertyName.replace(TEMPLATE_PREFIX, (TEMPLATE_PREFIX + outboxType) + ".")

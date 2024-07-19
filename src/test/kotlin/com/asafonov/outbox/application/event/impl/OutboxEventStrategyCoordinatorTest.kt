@@ -31,7 +31,7 @@ class OutboxEventStrategyCoordinatorTest {
     private val settings: OutboxEventSettings = OutboxEventSettings(eventType.getName(), mockEnvironment)
 
     @Test
-    @DisplayName("Обработка евента с помощью стратегии")
+    @DisplayName("Run All Operations for a Single Queue Type")
     fun applyEventStrategy_getLock_allOk() {
         runBlocking {
             launch(Dispatchers.Default) {

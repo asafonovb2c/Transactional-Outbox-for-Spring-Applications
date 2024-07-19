@@ -35,7 +35,7 @@ class RedisOutboxKeyLockerTest {
 
     @OptIn(DelicateCoroutinesApi::class)
     @Test
-    @DisplayName("Проверка работы локов в редисе")
+    @DisplayName("Verification of Redis Locks Functionality")
     fun redisLockTest_blockValue_unlockResult() {
         val keys = listOf(key1, keyAs1, key2)
         val repeatedKeys = keys.flatMap { key -> List(1000) { key } }

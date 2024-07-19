@@ -32,7 +32,7 @@ class DistributedEventsProviderTest {
     private val sessionUuid = UUID.randomUUID().toString()
 
     @Test
-    @DisplayName("Получение евентов с локами из редиса")
+    @DisplayName("Run All Operations for a Single Queue Type")
     fun getEvents_deleteOldEvents_getNewEvents() {
         every { redisStash.getFromStash(settings.stashName)} returns keyHolders
         every { outboxEventDbPort.selectEnabledEventsWithoutExcluded(eventType,

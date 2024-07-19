@@ -19,7 +19,7 @@ class OutboxSettingsManagerImplTest {
     private val eventType = TestOutboxEventType.TEST_EVENT
 
     @Test
-    @DisplayName("Прогон всех операций для одного типа очереди")
+    @DisplayName("Run All Operations for a Single Queue Type")
     fun allOperations_runThrough_becauseItEasier() {
         var dispatcher = settingsManager.getDispatcherOrAddIfAbsent(eventType)
         Assertions.assertNotNull(dispatcher)

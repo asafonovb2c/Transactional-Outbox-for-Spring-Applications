@@ -19,7 +19,7 @@ class RedisStashManagerImplTest {
     private lateinit var redisStashManager: RedisStashManagerImpl
 
     @Test
-    @DisplayName("Проверка сета коллекций в редис")
+    @DisplayName("Verification of Collection Set in Redis")
     fun basicLockTest() {
         val stashName = "stashName"
 

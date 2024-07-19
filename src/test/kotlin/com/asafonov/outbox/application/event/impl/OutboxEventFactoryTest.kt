@@ -15,7 +15,7 @@ class OutboxEventFactoryTest {
     val outboxEventFactory = OutboxEventFactory()
 
     @Test
-    @DisplayName("Создание нового евента")
+    @DisplayName("Run All Operations for a Single Queue Type")
     fun createNewEvent() {
 
         val event = TestEventDto("key")

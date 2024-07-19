@@ -49,7 +49,7 @@ class OutboxEventProcessorImplUnitTest {
     private val events = MutableList(1000) { createNewEvent() }
 
     @Test
-    @DisplayName("Проверка работоспособности обработки событий")
+    @DisplayName("Checking the functionality of event processing")
     fun process_filled_deleteAllEvents() {
         val taskExecutor = ThreadPoolTaskExecutor()
         taskExecutor.maxPoolSize = settings.poolMaxSize
