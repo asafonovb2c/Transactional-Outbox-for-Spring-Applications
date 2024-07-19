@@ -1,0 +1,10 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.asafonov.outbox.out.repository.config.FlywayOutboxConfiguration,\
+    com.asafonov.outbox.application.config.OutboxContextConfig,\
+    com.asafonov.outbox.application.config.OutboxEventSchedulerConfig,\
+    com.asafonov.outbox.application.config.OutboxRedisConfig
+
+org.springframework.boot.env.EnvironmentPostProcessor=\
+    com.asafonov.outbox.application.config.OutboxEnvironmentPostProcessor
+
