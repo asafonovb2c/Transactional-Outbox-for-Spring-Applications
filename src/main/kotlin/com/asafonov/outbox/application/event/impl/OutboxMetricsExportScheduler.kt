@@ -6,7 +6,7 @@ import com.asafonov.outbox.application.port.out.OutboxEventDbPort
 import com.asafonov.outbox.domain.event.OutboxEventDto
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.scheduling.annotation.Scheduled
 import java.util.concurrent.atomic.AtomicLong
 

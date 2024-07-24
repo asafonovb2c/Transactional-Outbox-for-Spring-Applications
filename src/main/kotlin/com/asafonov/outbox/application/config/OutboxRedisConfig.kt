@@ -4,7 +4,7 @@ import com.asafonov.outbox.application.port.redis.RedisStashManager
 import com.asafonov.outbox.out.redis.RedisStashManagerImpl
 import io.lettuce.core.ClientOptions
 import io.lettuce.core.SocketOptions
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty

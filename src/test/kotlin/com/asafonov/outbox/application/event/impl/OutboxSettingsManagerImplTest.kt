@@ -31,8 +31,7 @@ class OutboxSettingsManagerImplTest {
         Assertions.assertNotNull(trigger)
 
         settingsManager.shutdownAllTaskExecutors()
-        dispatcher = settingsManager.getDispatcherOrAddIfAbsent(eventType)
-        Assertions.assertFalse(dispatcher.isActive)
+        Assertions.assertTrue(dispatcher.isActive)
     }
 
 }

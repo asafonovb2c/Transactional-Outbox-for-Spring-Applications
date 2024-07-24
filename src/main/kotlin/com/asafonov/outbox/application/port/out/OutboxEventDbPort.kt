@@ -13,14 +13,12 @@ import java.time.Instant
 interface OutboxEventDbPort {
     /**
      * Deletes events from the queue.
-     *
      * @param events The list of events to be deleted from the queue.
      */
     fun delete(events: List<OutboxEvent>)
 
     /**
      * Saves new events to the queue.
-     *
      * @param type The type of event.
      * @param runtime The time when the event should be processed.
      * @param events The set of events to be saved.
@@ -29,14 +27,12 @@ interface OutboxEventDbPort {
 
     /**
      * Updates existing events in the queue.
-     *
      * @param events The list of events to be updated.
      */
     fun update(events: List<OutboxEvent>)
 
     /**
      * Retrieves events from the queue based on specified parameters.
-     *
      * @param eventType The type of events to retrieve.
      * @param attemptsMax The maximum number of processing attempts allowed.
      * @param limit The maximum number of events to retrieve.
@@ -47,7 +43,6 @@ interface OutboxEventDbPort {
     /**
      * Retrieves events from the queue based on specified parameters,
      * excluding those that are already being processed.
-     *
      * @param eventType The type of events to retrieve.
      * @param attemptsMax The maximum number of processing attempts allowed.
      * @param limit The maximum number of events to retrieve.
@@ -63,7 +58,6 @@ interface OutboxEventDbPort {
 
     /**
      * Saves a new event to the queue.
-     *
      * @param eventType The type of the event.
      * @param eventDto The event data transfer object to be saved.
      * @param runtime The time when the event should be processed.
@@ -72,7 +66,6 @@ interface OutboxEventDbPort {
 
     /**
      * Exports metrics for queue events.
-     *
      * @return A list of metrics for exporting to Grafana.
      */
     fun getOutboxEventMetrics(): List<OutboxEventTypeMetricsDto>

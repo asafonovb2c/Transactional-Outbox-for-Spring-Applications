@@ -10,7 +10,7 @@ import com.asafonov.outbox.domain.event.OutboxEventSettings
 import com.asafonov.outbox.domain.event.createEventLockBusyResult
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 
 open class OutboxEventStrategyCoordinator(open val outboxKeyLocker: OutboxKeyLocker,
                                           open val metricRegistry: MeterRegistry) {
@@ -19,7 +19,6 @@ open class OutboxEventStrategyCoordinator(open val outboxKeyLocker: OutboxKeyLoc
 
     /**
      * Applies the selected processing strategy to an event from the queue.
-     *
      * @param strategy The event handler that defines the processing strategy.
      * @param event The event retrieved from the queue.
      * @return The result of processing the event.

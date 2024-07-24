@@ -16,7 +16,6 @@ interface OutboxEventHandleStrategy<T : OutboxEventDto> {
 
     /**
      * Converts the event to a DTO.
-     *
      * @param event The event object from the queue.
      * @return The text from `OutboxEvent.getEvent()` converted to the specific class T.
      * @throws IllegalArgumentException If the event is null or empty.
@@ -30,7 +29,6 @@ interface OutboxEventHandleStrategy<T : OutboxEventDto> {
 
     /**
      * Handles a specific event.
-     *
      * @param eventDto The event of type T.
      * @return The result of processing the event.
      */
@@ -38,7 +36,6 @@ interface OutboxEventHandleStrategy<T : OutboxEventDto> {
 
     /**
      * Returns a set of metric tags for monitoring event processing.
-     *
      * @return A list of tags for metrics.
      */
     fun getMetricTags(): Collection<Tag> {
@@ -50,14 +47,12 @@ interface OutboxEventHandleStrategy<T : OutboxEventDto> {
 
     /**
      * Returns the type of event that the specific processor handles.
-     *
      * @return The type of event.
      */
     fun getEventType(): OutboxEventType
 
     /**
      * Returns the class of the event that the specific processor handles.
-     *
      * @return The class of the event.
      */
     fun getEventClass(): Class<T>

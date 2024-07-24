@@ -6,6 +6,7 @@ import com.asafonov.outbox.out.repository.AdditionalDaoConfig
 import com.asafonov.outbox.out.repository.config.FlywayOutboxConfiguration
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.newSingleThreadContext
@@ -32,8 +33,8 @@ class LocalOutboxKeyLockerTest {
     val keyAs1 = "Key1"
     val key2 = "Key2"
 
-    @OptIn(DelicateCoroutinesApi::class)
     @Test
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     @DisplayName("Verification of In-Memory Persistent Locks")
     fun lockLockerAsyncLock_blockValue_unlockResult() {
         val keys = listOf(key1, keyAs1, key2)
@@ -43,7 +44,7 @@ class LocalOutboxKeyLockerTest {
 
         Assertions.assertEquals(repeatedKeys.size, 3000)
 
-        val locked = locker!!.tryLockWithTimeOut(key1+key2, 500000)
+        locker!!.tryLockWithTimeOut(key1+key2, 60000)
 
         runBlocking {
             val deferredEvents = repeatedKeys.map { event ->

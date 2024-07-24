@@ -20,7 +20,7 @@ import com.asafonov.outbox.domain.event.OutboxEventDto
 import com.asafonov.outbox.out.repository.config.LockType
 import com.asafonov.outbox.out.repository.event.OutboxEventDbAdapter
 import io.micrometer.core.instrument.MeterRegistry
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.autoconfigure.metrics.CompositeMeterRegistryAutoConfiguration

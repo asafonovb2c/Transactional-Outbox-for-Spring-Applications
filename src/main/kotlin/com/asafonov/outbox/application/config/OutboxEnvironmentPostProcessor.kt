@@ -4,10 +4,12 @@ import com.asafonov.outbox.application.OutboxEventHandleStrategy
 import com.asafonov.outbox.domain.event.OutboxEventProperties.TIMEOUT
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.env.EnvironmentPostProcessor
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider
 import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.env.MapPropertySource
 import org.springframework.core.env.PropertySource
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.springframework.core.type.filter.AnnotationTypeFilter
+import org.springframework.core.type.filter.AssignableTypeFilter
 import org.springframework.scheduling.annotation.Scheduled
 
 open class OutboxEnvironmentPostProcessor: EnvironmentPostProcessor {
@@ -23,18 +25,7 @@ open class OutboxEnvironmentPostProcessor: EnvironmentPostProcessor {
     }
 
     override fun postProcessEnvironment(environment: ConfigurableEnvironment, application: SpringApplication) {
-        val resolver = PathMatchingResourcePatternResolver()
-        val scheduledAnnotationCount = resolver.getResources("classpath*:/**/*.class")
-            .mapNotNull {
-                it.url.toString()
-                    .substringAfter("classes/")
-                    .substringBefore(".class")
-                    .replace('/', '.')
-            }
-            .mapNotNull { runCatching { Class.forName(it) }.getOrNull() }
-            .sumOf { clazz -> countScheduledAnnotations(clazz) }
-
-        schedulerPoolDefaultProperties[poolSizeProperty] = scheduledAnnotationCount.toString()
+        schedulerPoolDefaultProperties[poolSizeProperty] = countScheduledAnnotations(application).toString()
         schedulerPoolDefaultProperties[shutdownTerminationProperty] = getMaxTimeout(environment).toString() + "ms"
 
         val propertyMap: MutableMap<String, Any> = mutableMapOf()
@@ -52,19 +43,13 @@ open class OutboxEnvironmentPostProcessor: EnvironmentPostProcessor {
         )
     }
 
-    private fun countScheduledAnnotations(clazz: Class<*>): Int {
-        val scheduledMethodsCount = (clazz.declaredMethods + clazz.methods)
-            .distinctBy { it.name }
-            .count {
-                it.isAnnotationPresent(Scheduled::class.java)
-            }
+    private fun countScheduledAnnotations(application: SpringApplication): Int {
+        val scanner = ClassPathScanningCandidateComponentProvider(false)
+        scanner.addIncludeFilter(AnnotationTypeFilter(Scheduled::class.java))
+        scanner.addIncludeFilter(AssignableTypeFilter(OutboxEventHandleStrategy::class.java))
 
-        val outboxEventHandleStrategyCount = clazz.interfaces
-            .count {
-                it == OutboxEventHandleStrategy::class.java
-            }
-
-        return scheduledMethodsCount + outboxEventHandleStrategyCount
+        val basePackage = application.mainApplicationClass?.packageName ?: ""
+        return scanner.findCandidateComponents(basePackage).size
     }
 
     private fun getMaxTimeout(environment: ConfigurableEnvironment): Long {

@@ -13,7 +13,6 @@ interface OutboxSettingsManager {
 
     /**
      * Retrieves or adds an ExecutorCoroutineDispatcher for the specified queue type.
-     *
      * @param eventType The type of queue for which to find or add the dispatcher.
      * @return The ExecutorCoroutineDispatcher associated with the specified queue type.
      */
@@ -21,7 +20,6 @@ interface OutboxSettingsManager {
 
     /**
      * Retrieves or adds the OutboxEventSettings for the specified queue type.
-     *
      * @param eventType The type of queue for which to find or add the settings.
      * @return The OutboxEventSettings associated with the specified queue type.
      */
@@ -29,7 +27,6 @@ interface OutboxSettingsManager {
 
     /**
      * Retrieves or adds the OutboxEventTrigger for the specified queue type.
-     *
      * @param eventType The type of queue for which to find or add the trigger.
      * @return The OutboxEventTrigger associated with the specified queue type.
      */

@@ -1,5 +1,6 @@
 package com.asafonov.outbox.application.outboxEvent.impl
 
+import com.asafonov.outbox.application.config.CallBlockPolicy
 import com.asafonov.outbox.application.event.EventsProvider
 import com.asafonov.outbox.application.event.OutboxSettingsManager
 import com.asafonov.outbox.application.event.impl.DistributedEventsProvider
@@ -24,7 +25,6 @@ import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.springframework.integration.util.CallerBlocksPolicy
 import org.springframework.mock.env.MockEnvironment
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 
@@ -57,7 +57,7 @@ class OutboxEventProcessorImplUnitTest {
         taskExecutor.queueCapacity = settings.poolMaxSize
         taskExecutor.setThreadNamePrefix(eventType.getName())
         taskExecutor.setWaitForTasksToCompleteOnShutdown(true)
-        taskExecutor.setRejectedExecutionHandler(CallerBlocksPolicy(1200000))
+        taskExecutor.setRejectedExecutionHandler(CallBlockPolicy(1200000))
         taskExecutor.setAllowCoreThreadTimeOut(true)
         taskExecutor.initialize()
         val dispatcher = taskExecutor.asCoroutineDispatcher() as ExecutorCoroutineDispatcher

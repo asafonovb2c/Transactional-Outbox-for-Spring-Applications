@@ -4,7 +4,7 @@ import com.asafonov.outbox.application.OutboxEventHandleStrategy
 import com.asafonov.outbox.application.OutboxEventProcessor
 import com.asafonov.outbox.application.event.OutboxSettingsManager
 import com.asafonov.outbox.domain.event.OutboxEventDto
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -26,7 +26,7 @@ open class OutboxEventSchedulerConfig(
     override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {
         handleStrategy.forEach { strategy ->
             if (isDestroyed) {
-                return@forEach
+                return
             }
 
             taskRegistrar.addTriggerTask({ outboxEventProcessorImpl.process(strategy) },

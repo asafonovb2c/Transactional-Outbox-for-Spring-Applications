@@ -6,6 +6,7 @@ import com.asafonov.outbox.domain.metric.OutboxEventTypeMetricsDto
 import org.apache.ibatis.annotations.Delete
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
+import org.apache.ibatis.annotations.Param
 import org.apache.ibatis.annotations.Select
 import org.apache.ibatis.annotations.Update
 import java.time.Instant
@@ -28,7 +29,7 @@ interface OutboxEventMapper {
         ) 
         </script>"""
     )
-    fun delete(events: Collection<OutboxEvent>)
+    fun delete(@Param("events") events: Collection<OutboxEvent>)
 
     /**
      * Inserts an event into the queue.
@@ -46,16 +47,16 @@ interface OutboxEventMapper {
                lock_key, 
                status ) 
             VALUES (
-               #{uuid}::uuid, 
-               #{eventType}, 
-               #{createTimestamp}, 
-               #{runTime}, 
-               #{event}, 
-               #{attempts}, 
-               #{failReason},
-               #{lockKey},
-               #{status})""")
-    fun insert(event: OutboxEvent)
+               #{event.uuid}::uuid, 
+               #{event.eventType}, 
+               #{event.createTimestamp}, 
+               #{event.runTime}, 
+               #{event.event}, 
+               #{event.attempts}, 
+               #{event.failReason},
+               #{event.lockKey},
+               #{event.status})""")
+    fun insert(@Param("event") event: OutboxEvent)
 
     @Insert("""<script>
             <foreach item='item' separator=';' collection='events'>
@@ -82,7 +83,7 @@ interface OutboxEventMapper {
                #{item.status})
             </foreach>
        </script>""")
-    fun insertAll(events: Collection<OutboxEvent>)
+    fun insertAll(@Param("events") events: Collection<OutboxEvent>)
 
     /**
      * Selects a specified number of the earliest events from the queue
@@ -104,8 +105,11 @@ interface OutboxEventMapper {
             ORDER BY run_time 
             LIMIT #{limit}
             """)
-    fun selectEvents(eventType: String, status: OutboxEventStatus, afterRunTime: Instant,
-                     attemptsMax: Long, limit: Int): Collection<OutboxEvent>
+    fun selectEvents(@Param("eventType") eventType: String,
+                     @Param("status") status: OutboxEventStatus,
+                     @Param("afterRunTime") afterRunTime: Instant,
+                     @Param("attemptsMax") attemptsMax: Long,
+                     @Param("limit") limit: Int): Collection<OutboxEvent>
 
 
     /**
@@ -143,8 +147,12 @@ interface OutboxEventMapper {
             ORDER BY run_time 
             LIMIT #{limit}   
             </script>""")
-    fun selectEventsWithoutUuids(eventType: String, status: OutboxEventStatus, afterRunTime: Instant, attemptsMax: Long,
-                                 limit: Int, excludedUuids: Collection<String>): Collection<OutboxEvent>
+    fun selectEventsWithoutUuids(@Param("eventType") eventType: String,
+                                 @Param("status") status: OutboxEventStatus,
+                                 @Param("afterRunTime") afterRunTime: Instant,
+                                 @Param("attemptsMax") attemptsMax: Long,
+                                 @Param("limit") limit: Int,
+                                 @Param("excludedUuids") excludedUuids: Collection<String>): Collection<OutboxEvent>
 
     /**
      * Updates the runtime and other associated properties for the queue events.
@@ -170,7 +178,7 @@ interface OutboxEventMapper {
                WHERE vals.uuid = q.uuid
                </script>
                """)
-    fun updateEvents(events: List<OutboxEvent>)
+    fun updateEvents(@Param("events") events: List<OutboxEvent>)
 
     /**
      * Returns a list of DTOs for the event queues, where the 'type' parameter contains the event type names,

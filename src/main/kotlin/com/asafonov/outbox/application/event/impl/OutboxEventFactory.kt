@@ -4,7 +4,7 @@ import com.asafonov.outbox.domain.event.OutboxEvent
 import com.asafonov.outbox.domain.event.OutboxEventDto
 import com.asafonov.outbox.domain.event.OutboxEventStatus
 import com.asafonov.outbox.domain.event.OutboxEventType
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.util.UUID

@@ -8,7 +8,7 @@ import com.asafonov.outbox.domain.event.OutboxEventDto
 import com.asafonov.outbox.domain.event.OutboxEventStatus
 import com.asafonov.outbox.domain.event.OutboxEventType
 import com.asafonov.outbox.domain.metric.OutboxEventTypeMetricsDto
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant

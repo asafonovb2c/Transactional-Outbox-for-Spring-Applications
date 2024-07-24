@@ -2,7 +2,7 @@ package com.asafonov.outbox.application.lock.impl
 
 import com.asafonov.outbox.application.lock.OutboxKeyLocker
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 
 open class LocalOutboxKeyLocker(): OutboxKeyLocker {
 

@@ -3,7 +3,7 @@ package com.asafonov.outbox.out.redis
 import com.asafonov.outbox.application.event.impl.JacksonSerializer
 import com.asafonov.outbox.application.port.redis.RedisStashManager
 import com.asafonov.outbox.domain.lock.KeyHolder
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.data.redis.core.StringRedisTemplate
 
 open class RedisStashManagerImpl(open val redisTemplate: StringRedisTemplate) : RedisStashManager {

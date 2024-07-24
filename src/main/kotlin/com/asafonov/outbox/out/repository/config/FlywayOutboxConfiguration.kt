@@ -10,7 +10,7 @@ import javax.sql.DataSource
 
 @Configuration
 @MapperScan(basePackages = ["com.asafonov.outbox.out.repository"])
-open class FlywayOutboxConfiguration{
+open class FlywayOutboxConfiguration {
 
     private val migrationLocation: String = "classpath:outbox/migrations/"
 

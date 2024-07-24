@@ -10,7 +10,6 @@ import com.asafonov.outbox.domain.event.OutboxEventType
 interface EventsProvider {
     /**
      * Retrieves events for processing.
-     *
      * @param eventType The type of queue from which to retrieve events.
      * @param settings The configuration settings for the queue.
      * @param sessionUuid The UUID associated with the processing session.

@@ -18,7 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList

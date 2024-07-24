@@ -1,5 +1,6 @@
 package com.asafonov.outbox.application.event.impl
 
+import com.asafonov.outbox.application.config.CallBlockPolicy
 import com.asafonov.outbox.application.event.OutboxSettingsManager
 import com.asafonov.outbox.domain.event.OutboxEventSettings
 import com.asafonov.outbox.domain.event.OutboxEventTrigger
@@ -9,12 +10,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.cloud.context.scope.refresh.RefreshScopeRefreshedEvent
 import org.springframework.context.event.EventListener
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.core.env.Environment
-import org.springframework.integration.util.CallerBlocksPolicy
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import java.util.concurrent.ConcurrentHashMap
 
@@ -85,7 +85,7 @@ open class OutboxSettingsManagerImpl(
         taskExecutor.queueCapacity = calculateSize(setting.loadEventsBatch, eventType)
         taskExecutor.setThreadNamePrefix(eventType + THREAD_PREFIX)
         taskExecutor.setWaitForTasksToCompleteOnShutdown(true)
-        taskExecutor.setRejectedExecutionHandler(CallerBlocksPolicy(setting.timeout))
+        taskExecutor.setRejectedExecutionHandler(CallBlockPolicy(setting.timeout))
         taskExecutor.setAllowCoreThreadTimeOut(true)
         taskExecutor.initialize()
         coroutineDispatchersMap[eventType] = taskExecutor.asCoroutineDispatcher() as ExecutorCoroutineDispatcher

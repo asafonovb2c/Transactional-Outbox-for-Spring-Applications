@@ -9,7 +9,6 @@ interface RedisStashManager {
 
     /**
      * Retrieves keys that are currently being processed from the stash.
-     *
      * @param stashName The name of the stash where keys are stored.
      * @return A collection of keys that are currently being processed.
      */
@@ -17,7 +16,6 @@ interface RedisStashManager {
 
     /**
      * Adds keys that are currently being processed to the stash with an expiration time.
-     *
      * @param stashName The name of the stash where keys will be stored.
      * @param stashKey The key in the stash for locking.
      * @param expiration The expiration time for the keys in milliseconds.
@@ -27,7 +25,6 @@ interface RedisStashManager {
 
     /**
      * Deletes keys from the stash that are currently being processed.
-     *
      * @param stashName The name of the stash where keys are stored.
      * @param stashKey The key in the stash for locking.
      */

@@ -8,7 +8,6 @@ import com.asafonov.outbox.domain.event.OutboxEventDto
 interface OutboxEventProcessor {
     /**
      * Processes events from the queue using the selected strategy.
-     *
      * @param strategy The chosen strategy for handling events.
      * @param <T> The type of event associated with the chosen strategy.
      */

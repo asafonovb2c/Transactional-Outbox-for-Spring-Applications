@@ -1,7 +1,7 @@
 package com.asafonov.outbox.application.lock.impl
 
 import com.asafonov.outbox.application.lock.OutboxKeyLocker
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import org.springframework.data.redis.core.StringRedisTemplate
 import java.util.concurrent.TimeUnit
 
@@ -25,11 +25,6 @@ open class RedisOutboxKeyLocker(open val redisTemplate: StringRedisTemplate) : O
 
     override fun unlock(lockKey: String, wasLocked: Boolean?) {
         try {
-            if (redisTemplate.connectionFactory?.connection?.isClosed!!) {
-                logger.warn { "Got connection.isClosed while trying to unlock for $lockKey"}
-                return
-            }
-
             if (wasLocked != null && wasLocked) {
                 val value = redisTemplate.opsForValue().get(lockKey)
                 if (value == lockKey) {
