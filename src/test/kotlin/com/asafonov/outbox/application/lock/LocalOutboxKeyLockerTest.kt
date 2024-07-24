@@ -49,10 +49,13 @@ class LocalOutboxKeyLockerTest {
         runBlocking {
             val deferredEvents = repeatedKeys.map { event ->
                 async(newSingleThreadContext("Thread1")) {
-                        val result = workSimulation(event, locker)
-                        if (result) listOfTrue.add(result)
-                        else listOfFalse.add(result)
-                   }
+                    val result = workSimulation(event, locker)
+                    if (result) {
+                        listOfTrue.add(result)
+                    } else {
+                        listOfFalse.add(result)
+                    }
+                }
             }
 
             deferredEvents.awaitAll()
