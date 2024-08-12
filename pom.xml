@@ -28,6 +28,7 @@
 		<org.slf4j.version>1.7.32</org.slf4j.version>
 		<flyway.version>8.5.3</flyway.version>
 		<micrometer.version>1.10.5</micrometer.version>
+		<classgraph.version>4.8.174</classgraph.version>
 	</properties>
 
 	<dependencies>
@@ -50,6 +51,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.classgraph</groupId>
+			<artifactId>classgraph</artifactId>
+			<version>${classgraph.version}</version>
 		</dependency>
 
 		<dependency>

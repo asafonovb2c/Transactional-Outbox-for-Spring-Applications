@@ -1,18 +1,19 @@
 package com.asafonov.outbox.application.config
 
-import com.asafonov.outbox.application.OutboxEventHandleStrategy
 import com.asafonov.outbox.domain.event.OutboxEventProperties.TIMEOUT
+import io.github.classgraph.ClassGraph
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.env.EnvironmentPostProcessor
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider
 import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.env.MapPropertySource
 import org.springframework.core.env.PropertySource
-import org.springframework.core.type.filter.AnnotationTypeFilter
-import org.springframework.core.type.filter.AssignableTypeFilter
-import org.springframework.scheduling.annotation.Scheduled
+
 
 open class OutboxEnvironmentPostProcessor: EnvironmentPostProcessor {
+
+    private val schedulerAnnotationName = "org.springframework.scheduling.annotation.Scheduled"
+    private val strategyContractName = "com.cdek.courier.outbox.application.OutboxEventHandleStrategy"
+    private val propertySourceName = "outboxSchedulerPropertySource"
 
     private val poolSizeProperty = "spring.task.scheduling.pool.size"
     private val shutdownTerminationProperty = "spring.task.scheduling.shutdown.await-termination-period"
@@ -25,7 +26,12 @@ open class OutboxEnvironmentPostProcessor: EnvironmentPostProcessor {
     }
 
     override fun postProcessEnvironment(environment: ConfigurableEnvironment, application: SpringApplication) {
-        schedulerPoolDefaultProperties[poolSizeProperty] = countScheduledAnnotations(application).toString()
+        val needToSetPoolSize = environment.getProperty(poolSizeProperty) != null
+
+        if (needToSetPoolSize) {
+            schedulerPoolDefaultProperties[poolSizeProperty] = countScheduledAnnotations(application).toString()
+        }
+
         schedulerPoolDefaultProperties[shutdownTerminationProperty] = getMaxTimeout(environment).toString() + "ms"
 
         val propertyMap: MutableMap<String, Any> = mutableMapOf()
@@ -38,18 +44,24 @@ open class OutboxEnvironmentPostProcessor: EnvironmentPostProcessor {
             }
         }
 
-        environment.propertySources.addFirst(
-            MapPropertySource("outboxSchedulerPropertySource", propertyMap)
-        )
+        environment.propertySources.addFirst(MapPropertySource(propertySourceName, propertyMap))
     }
 
     private fun countScheduledAnnotations(application: SpringApplication): Int {
-        val scanner = ClassPathScanningCandidateComponentProvider(false)
-        scanner.addIncludeFilter(AnnotationTypeFilter(Scheduled::class.java))
-        scanner.addIncludeFilter(AssignableTypeFilter(OutboxEventHandleStrategy::class.java))
-
         val basePackage = application.mainApplicationClass?.packageName ?: ""
-        return scanner.findCandidateComponents(basePackage).size
+
+        val scanResult = ClassGraph()
+            .acceptPackages(basePackage)
+            .enableAllInfo()
+            .scan()
+
+        val scheduledMethodsCount = scanResult.getClassesWithMethodAnnotation(schedulerAnnotationName)
+            .map { classInfo ->
+                classInfo.methodInfo.filter { it.hasAnnotation(schedulerAnnotationName) }.size
+            }.sum()
+
+        val implementationsCount = scanResult.getClassesImplementing(strategyContractName).size
+        return scheduledMethodsCount + implementationsCount
     }
 
     private fun getMaxTimeout(environment: ConfigurableEnvironment): Long {
