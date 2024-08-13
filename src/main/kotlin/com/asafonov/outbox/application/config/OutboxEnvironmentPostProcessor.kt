@@ -26,9 +26,9 @@ open class OutboxEnvironmentPostProcessor: EnvironmentPostProcessor {
     }
 
     override fun postProcessEnvironment(environment: ConfigurableEnvironment, application: SpringApplication) {
-        val needToSetPoolSize = environment.getProperty(poolSizeProperty) != null
+        val poolSize = environment.getProperty(poolSizeProperty)?.toInt() ?: 0
 
-        if (needToSetPoolSize) {
+        if (poolSize < 2) {
             schedulerPoolDefaultProperties[poolSizeProperty] = countScheduledAnnotations(application).toString()
         }
 
@@ -61,7 +61,13 @@ open class OutboxEnvironmentPostProcessor: EnvironmentPostProcessor {
             }.sum()
 
         val implementationsCount = scanResult.getClassesImplementing(strategyContractName).size
-        return scheduledMethodsCount + implementationsCount
+        val sum = scheduledMethodsCount + implementationsCount
+
+        if (sum == 0) {
+            return 1
+        }
+
+        return sum
     }
 
     private fun getMaxTimeout(environment: ConfigurableEnvironment): Long {
