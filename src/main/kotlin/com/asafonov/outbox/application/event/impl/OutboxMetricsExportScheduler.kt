@@ -7,6 +7,8 @@ import com.asafonov.outbox.domain.event.OutboxEventDto
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
 import mu.two.KotlinLogging
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Scheduled
 import java.util.concurrent.atomic.AtomicLong
 
@@ -33,7 +35,19 @@ open class OutboxMetricsExportScheduler (
         const val LOCK_TIMEOUT: Long = 55000
     }
 
-    @Scheduled(cron = "\${export.outbox.event.state.metrics:0 0/1 * * * *}")
+    @EventListener(ApplicationReadyEvent::class)
+    fun initMetrics() {
+        val initialMetrics = outboxEventDbPort.getOutboxEventMetrics().associate { it.type to it.size }
+
+        handleStrategy.forEach { strategy ->
+            val name = strategy.getEventType().getName()
+            val initialValue = initialMetrics[name] ?: 0L
+            eventSizeCache[name] = AtomicLong(initialValue)
+            metricRegistry.gauge("outbox.event.size", listOf(Tag.of("type", name.lowercase())), eventSizeCache[name]!!)
+        }
+    }
+
+    @Scheduled(cron = "\${export.outbox.event.state.metrics:0 0/3 * * * *}")
     fun exportMetrics() {
         val locked = outboxKeyLocker.tryLockWithTimeOut(LOCK_KEY, LOCK_TIMEOUT)
 
@@ -42,17 +56,15 @@ open class OutboxMetricsExportScheduler (
         }
 
         try {
-            val currentSizeMetrics: Map<String, Long>  = outboxEventDbPort.getOutboxEventMetrics().associate { it.type to it.size }
+            val currentSizeMetrics: Map<String, Long> = outboxEventDbPort.getOutboxEventMetrics().associate { it.type to it.size }
 
             handleStrategy.forEach { strategy ->
                 val name = strategy.getEventType().getName()
                 val newValue: Long? = currentSizeMetrics[name]
-                eventSizeCache[name] = AtomicLong(newValue ?: 0)
-                metricRegistry.gauge("outbox.event.size",
-                    listOf(Tag.of("type", name.lowercase())), eventSizeCache[name]!!)
+                eventSizeCache[name]?.set(newValue ?: 0)
             }
         } catch (e: Exception) {
-            logger.error(e) { "Failed to export outbox metrics"}
+            logger.error(e) { "Failed to export outbox metrics" }
             throw e
         } finally {
             outboxKeyLocker.unlock(LOCK_KEY, locked)

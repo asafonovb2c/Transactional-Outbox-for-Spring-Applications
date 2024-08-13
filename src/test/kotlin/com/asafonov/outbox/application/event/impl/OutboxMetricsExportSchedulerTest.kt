@@ -37,7 +37,7 @@ class OutboxMetricsExportSchedulerTest {
         every { outboxEventDbPort.getOutboxEventMetrics() } returns metrics
         every { outboxKeyLocker.tryLockWithTimeOut(any(), any()) }  returns true
 
-        outboxMetricsExportScheduler.exportMetrics()
+        outboxMetricsExportScheduler.initMetrics()
 
         verify { metricRegistry.gauge<AtomicLong>("outbox.event.size",
             listOf(Tag.of("type", TestOutboxEventType.TEST_EVENT.getName().lowercase())), match { it.get() == 5L }) }
