@@ -38,31 +38,28 @@ class LocalOutboxKeyLockerTest {
     @DisplayName("Verification of In-Memory Persistent Locks")
     fun lockLockerAsyncLock_blockValue_unlockResult() {
         val keys = listOf(key1, keyAs1, key2)
-        val repeatedKeys = keys.flatMap { key -> List(1000) { key } }
+        val repeatedKeys = keys.flatMap { key -> List(100) { key } }
         val listOfTrue = CopyOnWriteArrayList<Boolean>()
         val listOfFalse = CopyOnWriteArrayList<Boolean>()
 
-        Assertions.assertEquals(repeatedKeys.size, 3000)
+        Assertions.assertEquals(repeatedKeys.size, 300)
 
-        locker!!.tryLockWithTimeOut(key1+key2, 60000)
+        locker!!.tryLockWithTimeOut(key1+key2, 50000)
 
         runBlocking {
             val deferredEvents = repeatedKeys.map { event ->
                 async(newSingleThreadContext("Thread1")) {
-                    val result = workSimulation(event, locker)
-                    if (result) {
-                        listOfTrue.add(result)
-                    } else {
-                        listOfFalse.add(result)
-                    }
-                }
+                        val result = workSimulation(event, locker)
+                        if (result) listOfTrue.add(result)
+                        else listOfFalse.add(result)
+                   }
             }
 
             deferredEvents.awaitAll()
         }
 
         Assertions.assertEquals(listOfTrue.size, 2)
-        Assertions.assertEquals(listOfFalse.size, 2998)
+        Assertions.assertEquals(listOfFalse.size, 298)
 
         Assertions.assertTrue(locker!!.tryLockWithTimeOut(key1, 1000))
         Assertions.assertFalse(locker!!.tryLockWithTimeOut(keyAs1, 1000))

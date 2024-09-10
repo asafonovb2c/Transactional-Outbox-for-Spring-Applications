@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
+import java.util.UUID
 
 class OutboxEventMapperTest : BaseDaoTest() {
 
@@ -28,9 +29,12 @@ class OutboxEventMapperTest : BaseDaoTest() {
 
         Assertions.assertEquals(event.eventType, persistedEvent.eventType)
 
+        val excludedUuids = MutableList(2000) { UUID.randomUUID().toString() }
+        excludedUuids.add(persistedEvent.uuid)
         persistedEvents = mapper.selectEventsWithoutUuids(
             TestOutboxEventType.TEST_EVENT.name, OutboxEventStatus.ENABLED,
-            Instant.now().plusSeconds(1), 1, 100, listOf(persistedEvent.uuid))
+            Instant.now().plusSeconds(1), 1, 100, excludedUuids
+        )
 
         Assertions.assertTrue(persistedEvents.isEmpty())
 

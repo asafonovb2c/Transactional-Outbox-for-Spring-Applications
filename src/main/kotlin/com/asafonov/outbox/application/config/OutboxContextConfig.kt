@@ -28,11 +28,11 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfigu
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsEndpointAutoConfiguration
 import org.springframework.boot.actuate.autoconfigure.metrics.export.prometheus.PrometheusMetricsExportAutoConfiguration
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.core.env.Environment
-import org.springframework.data.redis.core.StringRedisTemplate
 
 
 @ImportAutoConfiguration(value = [
@@ -50,17 +50,14 @@ open class OutboxContextConfig {
     open val logger = KotlinLogging.logger {}
 
     @Bean
-    open fun outboxKeyLocker(@Qualifier("outboxStringRedisTemplate") redisTemplate: StringRedisTemplate?):
-            OutboxKeyLocker {
-        logger.info("Outbox Lock type = $lockType")
-        return when (lockType) {
-            LockType.REDIS.name -> RedisOutboxKeyLocker(redisTemplate!!)
-            LockType.LOCAL.name -> LocalOutboxKeyLocker()
-            else -> throw IllegalStateException(
-                "outbox.key.lock.type {$lockType} is not supported." +
-                        " Supported types are LOCAL or REDIS "
-            )
-        }
+    @ConditionalOnProperty(
+        value = ["outbox.key.lockType"],
+        havingValue = "LOCAL",
+        matchIfMissing = false
+    )
+    open fun outboxKeyLocker(): OutboxKeyLocker {
+        logger.info("Outbox Lock type = LOCAL")
+        return LocalOutboxKeyLocker()
     }
 
     @Bean

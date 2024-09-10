@@ -125,11 +125,10 @@ interface OutboxEventMapper {
     @Select("""<script> 
             <if test='excludedUuids != null and !excludedUuids.isEmpty'>
             WITH excluded_uuids AS (
-                VALUES ( 
+                VALUES  
                      <foreach item='item' index ='index' collection='excludedUuids' open='' separator=',' close=''>
                         (#{item}::uuid) 
                 </foreach>
-                )
             )
             </if>
             SELECT * 

@@ -1,5 +1,7 @@
 package com.asafonov.outbox.application.config
 
+import com.asafonov.outbox.application.lock.OutboxKeyLocker
+import com.asafonov.outbox.application.lock.impl.RedisOutboxKeyLocker
 import com.asafonov.outbox.application.port.redis.RedisStashManager
 import com.asafonov.outbox.out.redis.RedisStashManagerImpl
 import io.lettuce.core.ClientOptions
@@ -19,6 +21,7 @@ import org.springframework.data.redis.core.StringRedisTemplate
 import java.time.Duration
 
 @Configuration
+@ConditionalOnProperty(name = ["outbox.key.lockType"], havingValue = "REDIS")
 open class OutboxRedisConfig {
 
     @Value("\${spring.redis.database:#{1}}")
@@ -68,6 +71,7 @@ open class OutboxRedisConfig {
         val connectionFactory = LettuceConnectionFactory(serverConfig, clientConfig)
         connectionFactory.validateConnection = true
 
+        logger.info { "Connecting to ${serverConfig.hostName}" }
         return connectionFactory
     }
 
@@ -96,5 +100,17 @@ open class OutboxRedisConfig {
     open fun outboxRedisStashManager(@Qualifier("outboxStringRedisTemplate") redisTemplate: StringRedisTemplate):
             RedisStashManager {
         return RedisStashManagerImpl(redisTemplate)
+    }
+
+    @Bean
+    @ConditionalOnProperty(
+        value = ["outbox.key.lockType"],
+        havingValue = "REDIS",
+        matchIfMissing = false
+    )
+    open fun outboxKeyLocker(@Qualifier("outboxStringRedisTemplate") redisTemplate: StringRedisTemplate?):
+            OutboxKeyLocker {
+        logger.info("Outbox Lock type = REDIS")
+        return RedisOutboxKeyLocker(redisTemplate!!)
     }
 }

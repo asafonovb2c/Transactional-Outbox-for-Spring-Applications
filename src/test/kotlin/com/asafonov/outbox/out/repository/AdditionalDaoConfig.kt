@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource
 import org.apache.ibatis.session.SqlSessionFactory
 import org.mybatis.spring.SqlSessionFactoryBean
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import javax.sql.DataSource
@@ -27,7 +26,6 @@ open class AdditionalDaoConfig {
 
 
     @Bean(name = ["dataSource"])
-    @ConditionalOnMissingBean
     open fun dataSource(): DataSource {
         val config = HikariConfig()
         config.driverClassName = driver
@@ -40,9 +38,12 @@ open class AdditionalDaoConfig {
     }
 
     @Bean(name = ["outboxSqlSessionFactory"])
-    @ConditionalOnMissingBean(name = ["outboxSqlSessionFactory"])
     open fun outboxSqlSessionFactory(dataSource: DataSource?): SqlSessionFactory {
         val factoryBean = SqlSessionFactoryBean()
+        val configuration  = org.apache.ibatis.session.Configuration()
+        configuration.isUseColumnLabel = true
+        configuration.isUseActualParamName
+        factoryBean.setConfiguration(configuration)
         factoryBean.setDataSource(dataSource)
         return factoryBean.getObject()!!
     }

@@ -8,6 +8,6 @@ import org.springframework.test.context.TestPropertySource
 
 @TestPropertySource(locations = ["/application.properties"])
 @MybatisTest
-@ContextConfiguration(classes = [FlywayOutboxConfiguration::class])
+@ContextConfiguration(classes = [FlywayOutboxConfiguration::class, AdditionalDaoConfig::class])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 open class BaseDaoTest
